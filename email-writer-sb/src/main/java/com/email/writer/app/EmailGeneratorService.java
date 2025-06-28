@@ -63,14 +63,36 @@ public class EmailGeneratorService {
         }
     }
 
+    // private String buildPrompt(EmailRequest emailRequest) {
+    // StringBuilder prompt = new StringBuilder();
+    // prompt.append(
+    // "Generate a professional email reply for the following email content .Please
+    // dont generate a subject line.");
+    // if (emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()) {
+    // prompt.append("Use").append(emailRequest.getTone()).append("tone.");
+    // }
+    // prompt.append("\nOriginal email: \n").append(emailRequest.getEmailContent());
+    // return prompt.toString();
+    // }
+
     private String buildPrompt(EmailRequest emailRequest) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append(
-                "Generate a proffesional email for the following email content .Please dont generate a subject line.");
-        if (emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()) {
-            prompt.append("Use").append(emailRequest.getTone()).append("tone.");
+
+        // 1. Clear instruction to generate an email reply
+        prompt.append("Please write an email reply to the following original email. ");
+
+        // 2. Incorporate the tone if provided
+        if (emailRequest.getTone() != null && !emailRequest.getTone().trim().isEmpty()) {
+            prompt.append("The reply should be in a ").append(emailRequest.getTone().toLowerCase()).append(" tone. ");
         }
-        prompt.append("\nOriginal email: \n").append(emailRequest.getEmailContent());
+
+        // 3. Instruction to omit a subject line
+        prompt.append("Do not include a subject line.\n\n");
+
+        // 4. Clearly delineate the original email content
+        prompt.append("Original Email Content:\n")
+                .append(emailRequest.getEmailContent());
+
         return prompt.toString();
     }
 }
